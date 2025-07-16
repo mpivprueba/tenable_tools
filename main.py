@@ -1,16 +1,36 @@
-# Main script for testing API functions
+import sys
 
-from api_utils import get_scan_list, launch_scan, export_results
+def mostrar_ayuda():
+    print("Uso:")
+    print("  python main.py scans                 # Lista escaneos disponibles")
+    print("  python main.py activos               # Lista activos detectados")
+    print("  python main.py export [scan_id]      # Exporta escaneo por ID (opcional)")
+    print("  python main.py schedule <scan_id>    # Programa escaneo por ID")
 
-# Display available scans
-scans = get_scan_list()
-for scan in scans:
-    print(f"ID: {scan['id']} - Name: {scan['name']}")
+if len(sys.argv) < 2:
+    mostrar_ayuda()
+    sys.exit(1)
 
-# Launch and export first available scan
-scan_id = scans[0]['id'] if scans else None
-if scan_id:
-    launch_scan(scan_id)
-    export_results(scan_id)
+if sys.argv[1] == "scans":
+    from lab_scan_list import mostrar_scans
+    mostrar_scans()
+
+elif sys.argv[1] == "activos":
+    from lab_asset_inventory import listar_activos
+    listar_activos()
+
+elif sys.argv[1] == "export":
+    from lab_vuln_export import export_vulnerabilities
+    if len(sys.argv) >= 3:
+        export_vulnerabilities(scan_id=int(sys.argv[2]))
+    else:
+        export_vulnerabilities()
+
+elif sys.argv[1] == "schedule":
+    from lab_schedule_scan import programar_scan
+    if len(sys.argv) >= 3:
+        programar_scan(scan_id=int(sys.argv[2]))
+    else:
+        print("Debes proporcionar un ID de escaneo para programar.")
 else:
-    print("No scans available.")
+    mostrar_ayuda()

@@ -1,18 +1,33 @@
-# Tenable Tools - Python Integration
+# 🚀 Tenable Tools – Integración con API de Tenable.io
 
-This project allows interaction with the Tenable.io API using access and secret keys. It supports scan management and exporting results for automated analysis.
+Este proyecto permite interactuar con la API de Tenable.io utilizando Python. Incluye módulos para gestionar escaneos, listar activos, exportar vulnerabilidades y programar tareas, todo desde la terminal.
 
-## Structure
+---
 
-- `config.py`: Stores API credentials and base URL.
-- `api_utils.py`: Functions for API operations.
-- `main.py`: Executes test routines.
+## 📁 Estructura del proyecto
 
-## How to Run
+- `config.py`: Configuración con claves de acceso y URL base
+- `api_utils.py`: Funciones reutilizables para interacción con la API
+- `main.py`: Controlador principal que ejecuta módulos desde consola
+- `lab_asset_inventory.py`: Lista activos con IP y hostname
+- `lab_vuln_export.py`: Exporta vulnerabilidades filtradas por severidad
+- `lab_schedule_scan.py`: Programa escaneos automáticos
+- `test_auth.py`: Prueba la autenticación API
+- `test_asset_inventory.py`: Verifica funcionalidad de lab_asset_inventory
 
-1. Replace the access and secret keys in `config.py`.
-2. Open a terminal in Visual Studio Code.
-3. Run the script:
+---
 
-```bash
-python main.py
+## 🧪 Requisitos
+
+- Python 3.x
+- Cuenta activa en Tenable.io
+- Claves de acceso (`ACCESS_KEY`, `SECRET_KEY`) configuradas en `config.py`
+
+---
+
+## 💻 Cómo ejecutar
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/mpivprueba/tenable_tools.git
+   cd tenable_tools
