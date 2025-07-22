@@ -1,36 +1,135 @@
 import sys
 
-def mostrar_ayuda():
-    print("Uso:")
-    print("  python main.py scans                 # Lista escaneos disponibles")
-    print("  python main.py activos               # Lista activos detectados")
-    print("  python main.py export [scan_id]      # Exporta escaneo por ID (opcional)")
-    print("  python main.py schedule <scan_id>    # Programa escaneo por ID")
+def show_help():
+    print("Usage:")
+    print("  python main.py scans                                 # List available scans")
+    print("  python main.py assets                                # List detected assets")
+    print("  python main.py export [scan_id]                      # Export scan by ID (optional)")
+    print("  python main.py schedule <scan_id>                    # Schedule scan by ID")
+    print("  python main.py create_credential <name> <user> <password> <elevation_method> [account] [elevation_password] [bin_directory]")
+    print("  python main.py edit_credential <uuid> [name] [user] [password] [method] [account] [elevation_password] [bin_directory]")
+    print("  python main.py delete_credential <uuid>")
+    print("  python main.py list_credentials                      # Show all registered credentials")
+    print("  python main.py credential_types                      # Show available credential types")
+    print("  python main.py credential_names                      # List valid credential type names")
+    print("  python main.py credential_ids                        # Extract valid credential type IDs")
+    print("  python main.py credential_config <type>              # Show expected config for credential type")
+    print("  python main.py create_policy <name> <template_uuid> [targets] [credentials_uuid]")
+    print("  python main.py list_templates                        # List available scan templates")
+    print("  python main.py create_scan <name> <template_uuid> <targets> [credentials_uuid]")
+    print("  python main.py list_scanners                         # List available scanners")
 
 if len(sys.argv) < 2:
-    mostrar_ayuda()
+    show_help()
     sys.exit(1)
 
-if sys.argv[1] == "scans":
+command = sys.argv[1]
+
+if command == "scans":
     from lab_scan_list import mostrar_scans
     mostrar_scans()
 
-elif sys.argv[1] == "activos":
+elif command == "assets":
     from lab_asset_inventory import listar_activos
     listar_activos()
 
-elif sys.argv[1] == "export":
+elif command == "export":
     from lab_vuln_export import export_vulnerabilities
     if len(sys.argv) >= 3:
         export_vulnerabilities(scan_id=int(sys.argv[2]))
     else:
         export_vulnerabilities()
 
-elif sys.argv[1] == "schedule":
+elif command == "schedule":
     from lab_schedule_scan import programar_scan
     if len(sys.argv) >= 3:
         programar_scan(scan_id=int(sys.argv[2]))
     else:
-        print("Debes proporcionar un ID de escaneo para programar.")
+        print("You must provide a scan ID to schedule.")
+
+elif command == "create_credential":
+    from create_credentials import crear_credencial
+    if len(sys.argv) >= 6:
+        name = sys.argv[2]
+        user = sys.argv[3]
+        password = sys.argv[4]
+        method = sys.argv[5]
+        account = sys.argv[6] if len(sys.argv) > 6 else None
+        elevation_password = sys.argv[7] if len(sys.argv) > 7 else None
+        bin_dir = sys.argv[8] if len(sys.argv) > 8 else None
+
+        crear_credencial(name, user, password, method, account, elevation_password, bin_dir)
+    else:
+        print("Usage: create_credential <name> <user> <password> <elevation_method> [account] [elevation_password] [bin_directory]")
+
+elif command == "edit_credential":
+    from edit_credentials import editar_credencial
+    if len(sys.argv) >= 3:
+        uuid = sys.argv[2]
+        name = sys.argv[3] if len(sys.argv) > 3 else None
+        user = sys.argv[4] if len(sys.argv) > 4 else None
+        password = sys.argv[5] if len(sys.argv) > 5 else None
+        method = sys.argv[6] if len(sys.argv) > 6 else None
+        account = sys.argv[7] if len(sys.argv) > 7 else None
+        elevation_password = sys.argv[8] if len(sys.argv) > 8 else None
+        bin_dir = sys.argv[9] if len(sys.argv) > 9 else None
+
+        editar_credencial(uuid, name, user, password, method, account, elevation_password, bin_dir)
+    else:
+        print("Usage: edit_credential <uuid> [name] [user] [password] [method] [account] [elevation_password] [bin_directory]")
+
+elif command == "delete_credential":
+    from delete_credentials import eliminar_credencial
+    if len(sys.argv) >= 3:
+        eliminar_credencial(sys.argv[2])
+    else:
+        print("Usage: delete_credential <uuid>")
+
+elif command == "list_credentials":
+    from list_credentials import listar_credenciales
+    listar_credenciales()
+
+elif command == "credential_types":
+    from list_credential_types import listar_tipos_credenciales
+    listar_tipos_credenciales()
+
+elif command == "credential_names":
+    from list_credential_names import listar_nombres_tipos
+    listar_nombres_tipos()
+
+elif command == "credential_ids":
+    from extract_credential_ids import extraer_ids_de_credenciales
+    extraer_ids_de_credenciales()
+
+elif command == "credential_config":
+    from show_type_config import mostrar_configuracion_tipo
+    if len(sys.argv) >= 3:
+        mostrar_configuracion_tipo(sys.argv[2])
+    else:
+        print("Usage: credential_config <type>")
+
+elif command == "create_policy":
+    from create_policy import create_policy
+    if len(sys.argv) >= 4:
+        name = sys.argv[2]
+        template_uuid = sys.argv[3]
+        targets = sys.argv[4] if len(sys.argv) > 4 else ""
+        credentials_uuid = sys.argv[5] if len(sys.argv) > 5 else None
+        create_policy(name, template_uuid, targets, credentials_uuid)
+    else:
+        print("Usage: create_policy <name> <template_uuid> [targets] [credentials_uuid]")
+
+elif command == "list_templates":
+    from list_templates import list_templates
+    list_templates()
+
+elif command == "create_scan":
+    from create_scan import create_scan_interactive
+    create_scan_interactive()
+
+elif command == "list_scanners":
+    from list_scanners import list_scanners
+    list_scanners()
+
 else:
-    mostrar_ayuda()
+    show_help()
