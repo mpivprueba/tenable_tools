@@ -1,8 +1,20 @@
+"""
+list_scanners.py
+
+The function list_scanners fetches scanner details and prints their name, ID, and status.
+
+"""
+
 from api_utils import get_headers
 from config import BASE_URL
 import requests
 
 def list_scanners():
+    """
+    Retrieves and displays all scanners registered in Tenable.io.
+
+    """
+
     url = f"{BASE_URL}/scanners"
     response = requests.get(url, headers=get_headers())
 

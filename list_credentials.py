@@ -1,22 +1,35 @@
+"""
+list_credentials.py 
+
+The function listar_credenciales fetches the credentials and prints a summary
+including name, UUID, type, username, and privilege escalation method.
+
+"""
+
 from api_utils import get_headers
 from config import BASE_URL
 import requests
 
 def listar_credenciales():
+    """
+    Retrieves and displays all registered credentials from Tenable.io.
+
+    """
+
     url = f"{BASE_URL}/credentials"
     response = requests.get(url, headers=get_headers())
 
     if response.status_code == 200:
         datos = response.json()
-        print("Credenciales registradas:\n")
+        print("Registered credentials:\n")
         for cred in datos.get("credentials", []):
-            nombre = cred.get("name", "Sin nombre")
-            uuid = cred.get("uuid", "Sin UUID")
-            tipo = cred.get("type", {}).get("name", "Sin tipo")
+            nombre = cred.get("name", "No name")
+            uuid = cred.get("uuid", "No UUID")
+            tipo = cred.get("type", {}).get("name", "No type")
             settings = cred.get("settings", {})
-            usuario = settings.get("username", "Sin usuario")
-            metodo = settings.get("elevate_privileges_with", "Sin método")
-            print(f"- {nombre} | UUID: {uuid} | Tipo: {tipo} | Usuario: {usuario} | Elevación: {metodo}")
+            usuario = settings.get("username", "No user")
+            metodo = settings.get("elevate_privileges_with", "No escalation method")
+            print(f"- {nombre} | UUID: {uuid} | Type: {tipo} | User: {usuario} | Escalation: {metodo}")
     else:
-        print(f"Error al listar credenciales. Código: {response.status_code}")
+        print(f"Error listing credentials. Status code: {response.status_code}")
         print(response.text)

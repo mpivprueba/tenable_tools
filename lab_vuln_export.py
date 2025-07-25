@@ -1,7 +1,11 @@
 """
 lab_vuln_export.py
 
-Exporta resultados de escaneos finalizados en formato .nessus.
+Exports completed scan results from Tenable.io in .nessus format.
+
+The export_vulnerabilities function exports scan results by a given scan ID,
+or by the first completed scan if no ID is provided. It waits for the export file
+to be ready and then downloads and saves it locally.
 """
 
 from api_utils import get_scan_list, export_results
@@ -11,29 +15,37 @@ import time
 
 def export_vulnerabilities(scan_id=None):
     """
-    Exporta los resultados del escaneo por ID (si se proporciona), o del primero finalizado.
-    Guarda el archivo en formato .nessus.
+    Export scan results for a specified scan ID, or the first completed scan if none given.
+    Saves the exported results as a .nessus file.
+
+    Args:
+        scan_id (int or None): ID of the scan to export. Defaults to None.
+
+    Returns:
+        None. Prints status messages indicating success or failure.
     """
+
     headers = {
         "Content-Type": "application/json",
         "X-ApiKeys": f"accessKey={ACCESS_KEY}; secretKey={SECRET_KEY};"
     }
 
+    # If no scan ID provided, select the first completed scan
     if scan_id is None:
         scans = get_scan_list()
         scans_finalizados = [s for s in scans if s.get("status") == "completed"]
         if not scans_finalizados:
-            print("No hay escaneos finalizados disponibles.")
+            print("No completed scans available.")
             return
         scan_id = scans_finalizados[0]['id']
 
-    print(f"Exportando escaneo ID: {scan_id}")
+    print(f"Exporting scan ID: {scan_id}")
     export_id = export_results(scan_id)
     if not export_id:
-        print("No se pudo iniciar la exportación.")
+        print("Failed to initiate export.")
         return
 
-    # Esperar que el archivo esté listo
+    # Wait for the export file to be ready (up to ~30 seconds)
     status_url = f"{BASE_URL}/scans/{scan_id}/export/{export_id}/status"
     for _ in range(15):
         r = requests.get(status_url, headers=headers)
@@ -41,10 +53,10 @@ def export_vulnerabilities(scan_id=None):
             break
         time.sleep(2)
     else:
-        print("El archivo aún no está listo después de esperar.")
+        print("Export file is not ready after waiting.")
         return
 
-    # Descargar el archivo
+    # Download the exported file
     download_url = f"{BASE_URL}/scans/{scan_id}/export/{export_id}/download"
     r = requests.get(download_url, headers=headers)
     if r.status_code == 200:
@@ -52,6 +64,6 @@ def export_vulnerabilities(scan_id=None):
         nombre_archivo = f"export_scan_{scan_id}.nessus"
         with open(nombre_archivo, "w", encoding="utf-8") as f:
             f.write(contenido)
-        print(f"Archivo guardado como {nombre_archivo}")
+        print(f"File saved as {nombre_archivo}")
     else:
-        print(f"Error al descargar resultados: {r.status_code}")
+        print(f"Error downloading results: {r.status_code}")

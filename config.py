@@ -1,5 +1,16 @@
-# Configuration file for API access
+"""
+config.py 
 
-ACCESS_KEY = "de09af9d4e76386231f53bc0fa326668e5cc98d6ad669dde4fd3fc90b3be221e"
-SECRET_KEY = "f70fa24298668e1e1507da903f8e52c2313d144f6fce8e528e252b43365e0057"
-BASE_URL = "https://cloud.tenable.com"
+This module loads the necessary configuration variables for authenticating and interacting
+with the Tenable.io API. It uses environment variables, optionally loaded from a `.env` file,
+to securely manage sensitive information such as API credentials.
+
+"""
+import os # For accessing environment variables.
+from dotenv import load_dotenv #To load variables from a .env file into the environment.
+
+load_dotenv()
+
+ACCESS_KEY = os.getenv("ACCESS_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
+BASE_URL   = os.getenv("BASE_URL", "https://cloud.tenable.com")

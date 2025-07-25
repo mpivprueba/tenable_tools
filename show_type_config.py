@@ -1,9 +1,23 @@
+"""
+show_type_config.py
+
+The function `mostrar_configuracion_tipo` fetches all credential types and prints detailed
+configuration info (field name, ID, required status, and possible values) for the specified type ID.
+
+"""
+
 from api_utils import get_headers
 from config import BASE_URL
 import requests
 import json
 
 def mostrar_configuracion_tipo(tipo_id):
+    """
+    Prints expected configuration fields for a given credential type ID.
+
+    Returns:
+        None. Prints configuration details or error messages.
+    """
     url = f"{BASE_URL}/credentials/types"
     response = requests.get(url, headers=get_headers())
 

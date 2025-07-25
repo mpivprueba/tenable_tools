@@ -1,6 +1,19 @@
+"""
+main.py - Tenable.io CLI Utility
+
+This script serves as a command-line interface (CLI) for managing and interacting
+with the Tenable.io API. It provides users with access to scan, asset, credential,
+and policy management features, using various subcommands.
+
+"""
+
 import sys
 
 def show_help():
+    """
+    Display CLI usage instructions for all supported commands.
+    Called when no arguments are passed or an unknown command is used.
+    """
     print("Usage:")
     print("  python main.py scans                                 # List available scans")
     print("  python main.py assets                                # List detected assets")
@@ -19,11 +32,15 @@ def show_help():
     print("  python main.py create_scan <name> <template_uuid> <targets> [credentials_uuid]")
     print("  python main.py list_scanners                         # List available scanners")
 
+# Check if a command was provided
 if len(sys.argv) < 2:
     show_help()
     sys.exit(1)
 
+# Get the command from arguments
 command = sys.argv[1]
+
+# Command dispatching using if-elif structure
 
 if command == "scans":
     from lab_scan_list import mostrar_scans
@@ -35,6 +52,7 @@ elif command == "assets":
 
 elif command == "export":
     from lab_vuln_export import export_vulnerabilities
+    # scan_id is optional
     if len(sys.argv) >= 3:
         export_vulnerabilities(scan_id=int(sys.argv[2]))
     else:
@@ -50,10 +68,12 @@ elif command == "schedule":
 elif command == "create_credential":
     from create_credentials import crear_credencial
     if len(sys.argv) >= 6:
+        # Required parameters
         name = sys.argv[2]
         user = sys.argv[3]
         password = sys.argv[4]
         method = sys.argv[5]
+        # Optional parameters
         account = sys.argv[6] if len(sys.argv) > 6 else None
         elevation_password = sys.argv[7] if len(sys.argv) > 7 else None
         bin_dir = sys.argv[8] if len(sys.argv) > 8 else None
@@ -65,7 +85,9 @@ elif command == "create_credential":
 elif command == "edit_credential":
     from edit_credentials import editar_credencial
     if len(sys.argv) >= 3:
+        # Required parameter
         uuid = sys.argv[2]
+        # Optional fields
         name = sys.argv[3] if len(sys.argv) > 3 else None
         user = sys.argv[4] if len(sys.argv) > 4 else None
         password = sys.argv[5] if len(sys.argv) > 5 else None
@@ -113,6 +135,7 @@ elif command == "create_policy":
     if len(sys.argv) >= 4:
         name = sys.argv[2]
         template_uuid = sys.argv[3]
+        # Optional arguments
         targets = sys.argv[4] if len(sys.argv) > 4 else ""
         credentials_uuid = sys.argv[5] if len(sys.argv) > 5 else None
         create_policy(name, template_uuid, targets, credentials_uuid)
@@ -132,4 +155,5 @@ elif command == "list_scanners":
     list_scanners()
 
 else:
+    # Unknown command fallback
     show_help()
