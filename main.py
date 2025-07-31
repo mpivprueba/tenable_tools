@@ -31,7 +31,12 @@ def show_help():
     print("  python main.py list_templates                        # List available scan templates")
     print("  python main.py create_scan <name> <template_uuid> <targets> [credentials_uuid]")
     print("  python main.py list_scanners                         # List available scanners")
-
+    print("  python main.py critical_vulns <scan_id> [...]        # Enviar correo si hay vulnerabilidades críticas")
+    print("  python main.py generate_assets_report                # Exporta activos en CSV")
+    print("  python main.py generate_untagged_report              # Exporta activos sin etiquetas")
+    print("  python main.py generate_tags_summary                 # Muestra resumen de etiquetas")
+    print("  python main.py generate_vulns_report [scan_id...]    # Exporta reporte de vulnerabilidades")
+    
 # Check if a command was provided
 if len(sys.argv) < 2:
     show_help()
@@ -154,6 +159,27 @@ elif command == "list_scanners":
     from list_scanners import list_scanners
     list_scanners()
 
+elif command == "critical_vulns":
+    from alerts import alerts
+    scan_ids = [int(arg) for arg in sys.argv[2:]] if len(sys.argv) > 2 else []
+    alerts.critical_vulns(*scan_ids)
+
+elif command == "generate_assets_report":
+    from assets_reports import assets
+    assets().report()
+
+elif command == "generate_untagged_report":
+    from assets_reports import assets
+    assets().untagged()
+
+elif command == "generate_tags_summary":
+    from tags import tags
+    tags().summary()
+
+elif command == "generate_vulns_report":
+    from vulnerabilities_reports import vulnerabilities
+    scan_ids = [int(arg) for arg in sys.argv[2:]] if len(sys.argv) > 2 else []
+    vulnerabilities().report(*scan_ids)
 else:
     # Unknown command fallback
     show_help()
