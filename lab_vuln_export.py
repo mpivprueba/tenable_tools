@@ -1,14 +1,14 @@
 """
 lab_vuln_export.py
 
-Exports completed scan results from Tenable.io in .nessus format.
+Exports completed scan results from Tenable.io in CSV format.
 
 The export_vulnerabilities function exports scan results by a given scan ID,
 or by the first completed scan if no ID is provided. It waits for the export file
 to be ready and then downloads and saves it locally.
 """
 
-from api_utils import get_scan_list, export_results
+from api_utils import get_scan_list
 from config import BASE_URL, ACCESS_KEY, SECRET_KEY
 import requests
 import time
@@ -16,7 +16,7 @@ import time
 def export_vulnerabilities(scan_id=None):
     """
     Export scan results for a specified scan ID, or the first completed scan if none given.
-    Saves the exported results as a .nessus file.
+    Saves the exported results as a CSV file.
 
     Args:
         scan_id (int or None): ID of the scan to export. Defaults to None.
@@ -39,13 +39,30 @@ def export_vulnerabilities(scan_id=None):
             return
         scan_id = scans_finalizados[0]['id']
 
-    print(f"Exporting scan ID: {scan_id}")
-    export_id = export_results(scan_id)
-    if not export_id:
-        print("Failed to initiate export.")
+    print(f">> Exporting scan ID: {scan_id}")
+
+    # 1. Request export in CSV format
+    export_url = f"{BASE_URL}/scans/{scan_id}/export"
+    payload = {
+        "format": "csv",
+        "reportContents": {
+            "csvColumns": [
+                "plugin_id", "severity", "plugin_name", "host", "protocol", "port"
+            ]
+        }
+    }
+
+    r = requests.post(export_url, headers=headers, json=payload)
+    if r.status_code != 200:
+        print(f"Error initiating export: {r.status_code}")
         return
 
-    # Wait for the export file to be ready (up to ~30 seconds)
+    export_id = r.json().get("file")
+    if not export_id:
+        print("No export file ID received.")
+        return
+
+    # 2. Wait until export is ready
     status_url = f"{BASE_URL}/scans/{scan_id}/export/{export_id}/status"
     for _ in range(15):
         r = requests.get(status_url, headers=headers)
@@ -56,14 +73,12 @@ def export_vulnerabilities(scan_id=None):
         print("Export file is not ready after waiting.")
         return
 
-    # Download the exported file
+    # 3. Download the CSV file
     download_url = f"{BASE_URL}/scans/{scan_id}/export/{export_id}/download"
     r = requests.get(download_url, headers=headers)
     if r.status_code == 200:
-        contenido = r.text
-        nombre_archivo = f"export_scan_{scan_id}.nessus"
-        with open(nombre_archivo, "w", encoding="utf-8") as f:
-            f.write(contenido)
-        print(f"File saved as {nombre_archivo}")
+        with open("myscan.csv", "w", encoding="utf-8") as f:
+            f.write(r.text)
+        print("myscan.csv exportado correctamente.")
     else:
-        print(f"Error downloading results: {r.status_code}")
+        print(f"Error downloading CSV file: {r.status_code}")

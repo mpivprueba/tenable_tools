@@ -36,6 +36,11 @@ def show_help():
     print("  python main.py generate_untagged_report              # Exporta activos sin etiquetas")
     print("  python main.py generate_tags_summary                 # Muestra resumen de etiquetas")
     print("  python main.py generate_vulns_report [scan_id...]    # Exporta reporte de vulnerabilidades")
+    print("  python main.py export_pdf <scan_id>                  # Exportar resultados del escaneo a PDF")
+    print("  python main.py read_results                          # Leer archivo myscan.csv desde Python")
+    print("  python main.py critical_vulns_count                  # Contar vulnerabilidades críticas")
+    print("  python main.py webapp_scan                           # Lanzar escaneo WAS sobre demo.testfire.net")
+    print("  python main.py webapp_scan_basic                     # Crear escaneo WebApp básico sobre demo.testfire.net")
     
 # Check if a command was provided
 if len(sys.argv) < 2:
@@ -180,6 +185,30 @@ elif command == "generate_vulns_report":
     from vulnerabilities_reports import vulnerabilities
     scan_ids = [int(arg) for arg in sys.argv[2:]] if len(sys.argv) > 2 else []
     vulnerabilities().report(*scan_ids)
+
+elif command == "export_pdf":
+    from lab_export_pdf import export_scan_to_pdf
+    if len(sys.argv) >= 3:
+        export_scan_to_pdf(int(sys.argv[2]))
+    else:
+        print("Debes indicar el scan_id para exportar a PDF.")
+
+elif command == "read_results":
+    from read_results import leer_resultados_csv
+    leer_resultados_csv()
+
+elif command == "critical_vulns_count":
+    from critical_vuln_count import contar_vulnerabilidades_criticas
+    contar_vulnerabilidades_criticas()
+
+elif command == "webapp_scan":
+    from webapp_scan import lanzar_webapp_scan
+    lanzar_webapp_scan()
+
+elif command == "webapp_scan_basic":
+    from webapp_scan_basic import crear_webapp_scan_basico
+    crear_webapp_scan_basico()
+
 else:
     # Unknown command fallback
     show_help()

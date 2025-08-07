@@ -53,6 +53,7 @@ MANIFEST
 *.txt
 *.csv
 *.json
+*.pdf
 
 # Resultados personalizados del proyecto
 scan_result_*.json
