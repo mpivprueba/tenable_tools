@@ -41,7 +41,7 @@ def show_help():
     print("  python main.py critical_vulns_count                  # Contar vulnerabilidades críticas")
     print("  python main.py webapp_scan                           # Lanzar escaneo WAS sobre demo.testfire.net")
     print("  python main.py webapp_scan_basic                     # Crear escaneo WebApp básico sobre demo.testfire.net")
-    
+
 # Check if a command was provided
 if len(sys.argv) < 2:
     show_help()
@@ -165,9 +165,12 @@ elif command == "list_scanners":
     list_scanners()
 
 elif command == "critical_vulns":
-    from alerts import alerts
-    scan_ids = [int(arg) for arg in sys.argv[2:]] if len(sys.argv) > 2 else []
-    alerts.critical_vulns(*scan_ids)
+    from alerts import Alerts
+    if len(sys.argv) > 2:
+        scan_ids = sys.argv[2:]
+        Alerts.critical_vulns(*scan_ids)
+    else:
+        print("Usage: python main.py critical_vulns <scan_id> [scan_id...]")
 
 elif command == "generate_assets_report":
     from assets_reports import assets
