@@ -1,5 +1,5 @@
 """
-delete_credentials.py 
+delete_credentials.py
 
 This module provides a function to delete a credential by its UUID
 using the Tenable.io API.
@@ -10,7 +10,7 @@ from api_utils import get_headers  # Import function to get authentication heade
 from config import BASE_URL        # Import base URL for Tenable.io API
 import requests                    # HTTP client for API calls
 
-def eliminar_credencial(uuid):
+def delete_credential(uuid):
     """
     Deletes a credential from Tenable.io by its UUID.
 
@@ -29,7 +29,7 @@ def eliminar_credencial(uuid):
 
     # Check response status and print the outcome
     if response.status_code == 200:
-        print(f"Credencial eliminada correctamente.")
+        print("Credential deleted successfully.")
     else:
-        print(f"Error al eliminar credencial. Código: {response.status_code}")
+        print(f"Failed to delete credential. Status code: {response.status_code}")
         print(response.text)

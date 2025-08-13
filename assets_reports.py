@@ -1,7 +1,7 @@
 """
 assets_reports.py
 
-The class assets provides methods to export asset data and generate reports on untagged assets.
+The Assets class provides methods to export asset data and generate reports on untagged assets.
 """
 
 from api_utils import get_headers
@@ -9,7 +9,7 @@ from config import BASE_URL
 import requests
 import csv
 
-class assets:
+class Assets:
     def report(self):
         """
         Exports all assets to 'assets_report.csv'.
@@ -21,7 +21,7 @@ class assets:
             data = response.json().get("assets", [])
             with open("assets_report.csv", "w", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
-                writer.writerow(["ID", "Nombre", "IP", "Etiquetas"])
+                writer.writerow(["ID", "Name", "IP", "Tags"])
 
                 for item in data:
                     asset_id = item.get("id", "")
@@ -29,7 +29,7 @@ class assets:
                     ip = item.get("ip", "")
                     tags = ", ".join(tag.get("value", "") for tag in item.get("tags", []))
                     writer.writerow([asset_id, name, ip, tags])
-            print("Reporte de activos exportado.")
+            print("Assets report exported.")
         else:
             print(f"Error: {response.status_code}")
             print(response.text)
@@ -46,15 +46,15 @@ class assets:
             untagged = [a for a in data if not a.get("tags")]
 
             if not untagged:
-                print("Todos los activos tienen etiquetas.")
+                print("All assets have tags.")
                 return
 
             with open("untagged_assets.csv", "w", newline="", encoding="utf-8") as file:
                 writer = csv.writer(file)
-                writer.writerow(["ID", "Nombre", "IP"])
+                writer.writerow(["ID", "Name", "IP"])
                 for item in untagged:
                     writer.writerow([item.get("id", ""), item.get("hostname", ""), item.get("ip", "")])
-            print("Activos sin etiquetas exportados.")
+            print("Untagged assets exported.")
         else:
             print(f"Error: {response.status_code}")
             print(response.text)

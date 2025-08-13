@@ -1,42 +1,42 @@
 """
 read_results.py
 
-Este módulo permite leer y visualizar el contenido del archivo myscan.csv
-exportado desde un escaneo de Tenable.io. Muestra una vista tabular de las
-primeras filas del archivo para facilitar la revisión rápida.
+This module reads and displays the content of the myscan.csv file
+exported from a Tenable.io scan. It shows a tabular view of the first rows
+to facilitate quick review.
 
-Uso desde main.py:
+Usage from main.py:
   python main.py read_results
+  
 """
 
 import csv
 import os
 
-
-def leer_resultados_csv(ruta="myscan.csv", limite_filas=10):
+def read_results_csv(path="myscan.csv", row_limit=10):
     """
-    Lee y muestra las primeras filas del archivo myscan.csv.
+    Reads and displays the first rows of the myscan.csv file.
 
     Args:
-        ruta (str): Ruta al archivo CSV a leer.
-        limite_filas (int): Número de filas a mostrar (por defecto 10).
+        path (str): Path to the CSV file to read.
+        row_limit (int): Number of rows to display (default is 10).
 
     Returns:
-        None. Imprime filas del CSV.
+        None. Prints rows from the CSV.
     """
-    if not os.path.exists(ruta):
-        print(f"No se encontró el archivo: {ruta}")
+    if not os.path.exists(path):
+        print(f"File not found: {path}")
         return
 
     try:
-        with open(ruta, mode="r", encoding="utf-8") as archivo:
-            lector = csv.reader(archivo)
-            encabezados = next(lector, [])
-            print(" | ".join(encabezados))
+        with open(path, mode="r", encoding="utf-8") as file:
+            reader = csv.reader(file)
+            headers = next(reader, [])
+            print(" | ".join(headers))
             print("-" * 80)
-            for i, fila in enumerate(lector):
-                print(" | ".join(fila))
-                if i + 1 >= limite_filas:
+            for i, row in enumerate(reader):
+                print(" | ".join(row))
+                if i + 1 >= row_limit:
                     break
     except Exception as e:
-        print(f"Error al leer el archivo CSV: {e}")
+        print(f"Error reading CSV file: {e}")

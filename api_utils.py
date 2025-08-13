@@ -1,14 +1,14 @@
 import requests
 from config import ACCESS_KEY, SECRET_KEY, BASE_URL
 
-# Genera encabezados para autenticación con Tenable.io
+# Generate headers for authentication with Tenable.io
 def get_headers():
     return {
         "X-ApiKeys": f"accessKey={ACCESS_KEY}; secretKey={SECRET_KEY};",
         "Content-Type": "application/json"
     }
 
-# Obtiene la lista de escaneos disponibles
+# Get the list of available scans
 def get_scan_list():
     url = f"{BASE_URL}/scans"
     response = requests.get(url, headers=get_headers())
@@ -17,7 +17,7 @@ def get_scan_list():
     else:
         raise Exception(f"Failed to retrieve scans: {response.status_code}")
 
-# Lanza un escaneo por ID
+# Launch a scan by ID
 def launch_scan(scan_id):
     url = f"{BASE_URL}/scans/{scan_id}/launch"
     response = requests.post(url, headers=get_headers())
@@ -26,19 +26,19 @@ def launch_scan(scan_id):
     else:
         print(f"Failed to launch scan: {response.status_code}")
 
-# Exporta resultados del escaneo en formato .nessus
+# Export scan results in .nessus format
 def export_results(scan_id):
     url = f"{BASE_URL}/scans/{scan_id}/export"
     payload = {
-    "format": "nessus",
-    "chapters": "vulnerabilities"  # ← ahora como string, no lista
-}
+        "format": "nessus",
+        "chapters": "vulnerabilities"  # ← now as string, not list
+    }
     response = requests.post(url, headers=get_headers(), json=payload)
     if response.status_code == 200:
         file_id = response.json().get("file")
         print(f"Export started. File ID: {file_id}")
         return file_id
     else:
-        mensaje = response.json().get("error", "Exportación no permitida o escaneo incompleto.")
-        print(f"Failed to export results: {response.status_code} – {mensaje}")
+        message = response.json().get("error", "Export not allowed or incomplete scan.")
+        print(f"Failed to export results: {response.status_code} – {message}")
         return None

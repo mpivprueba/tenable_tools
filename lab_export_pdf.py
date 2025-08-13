@@ -1,10 +1,10 @@
 """
 lab_export_pdf.py
 
-Este módulo permite exportar los resultados de un escaneo en formato PDF
-desde Tenable.io utilizando la API.
+This module allows exporting scan results in PDF format
+from Tenable.io using the API.
 
-Uso desde main.py:
+Usage from main.py:
   python main.py export_pdf <scan_id>
 """
 
@@ -16,50 +16,50 @@ from api_utils import get_headers
 
 def export_scan_to_pdf(scan_id):
     """
-    Exporta un escaneo específico a formato PDF.
+    Exports a specific scan to PDF format.
 
     Args:
-        scan_id (int): ID del escaneo que se desea exportar.
+        scan_id (int): ID of the scan to export.
 
     Returns:
-        None. Guarda un archivo PDF en disco.
+        None. Saves a PDF file to disk.
     """
     url = f"{BASE_URL}/scans/{scan_id}/export"
 
-    # Definir el payload para exportar en formato PDF
+    # Define the payload to export in PDF format
     payload = {
         "format": "pdf",
         "chapters": "vuln_hosts_summary"
     }
 
-    # Enviar solicitud de exportación
+    # Send export request
     response = requests.post(url, headers=get_headers(), json=payload)
 
     if response.status_code != 200:
-        print(f"Error al solicitar la exportación. Código: {response.status_code}")
+        print(f"Error requesting export. Status code: {response.status_code}")
         return
 
     file_id = response.json()["file"]
 
-    # Esperar hasta que el archivo esté listo para ser descargado
+    # Wait until the file is ready for download
     status_url = f"{url}/{file_id}/status"
     download_url = f"{url}/{file_id}/download"
 
-    for _ in range(10):  # Máximo 10 intentos
+    for _ in range(10):  # Maximum 10 attempts
         status_response = requests.get(status_url, headers=get_headers())
         if status_response.json().get("status") == "ready":
             break
         time.sleep(2)
     else:
-        print("El archivo PDF no estuvo listo a tiempo.")
+        print("PDF file was not ready in time.")
         return
 
-    # Descargar el archivo
+    # Download the file
     pdf_response = requests.get(download_url, headers=get_headers())
     if pdf_response.status_code == 200:
         filename = f"scan_{scan_id}.pdf"
         with open(filename, "wb") as f:
             f.write(pdf_response.content)
-        print(f"Reporte PDF guardado como {filename}")
+        print(f"PDF report saved as {filename}")
     else:
-        print(f"No se pudo descargar el PDF. Código: {pdf_response.status_code}")
+        print(f"Failed to download PDF. Status code: {pdf_response.status_code}")

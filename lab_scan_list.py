@@ -6,7 +6,7 @@ Displays the list of available scans in Tenable.io, sorted by scan ID.
 
 from api_utils import get_scan_list  # Import function to retrieve scan list from API
 
-def mostrar_scans():
+def show_scans():
     """
     Retrieves and prints the list of scans from Tenable.io sorted by ascending ID.
 
@@ -19,11 +19,11 @@ def mostrar_scans():
         return
 
     # Sort scans by their ID in ascending order
-    scans_ordenados = sorted(scans, key=lambda s: s.get("id", 0))
+    sorted_scans = sorted(scans, key=lambda s: s.get("id", 0))
 
     print("Available scans (sorted by ID):")
-    for scan in scans_ordenados:
+    for scan in sorted_scans:
         scan_id = scan.get("id", "N/A")
-        nombre = scan.get("name", "Unnamed")
-        estado = scan.get("status", "Unknown")
-        print(f"- ID: {scan_id} | Name: {nombre} | Status: {estado}")
+        name = scan.get("name", "Unnamed")
+        status = scan.get("status", "Unknown")
+        print(f"- ID: {scan_id} | Name: {name} | Status: {status}")
