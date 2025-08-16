@@ -134,7 +134,7 @@ elif command == "credential_ids":
     extract_credential_ids()
 
 elif command == "credential_config":
-    from show_type_config import show_type_config
+    from credentials.show_type_config import show_type_config
     if len(sys.argv) >= 3:
         show_type_config(sys.argv[2])
     else:
@@ -161,7 +161,7 @@ elif command == "create_scan":
     create_scan_interactive()
 
 elif command == "list_scanners":
-    from list_scanners import list_scanners
+    from scans.list_scanners import list_scanners
     list_scanners()
 
 elif command == "critical_vulns":

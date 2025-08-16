@@ -1,12 +1,13 @@
-GUÍA DE DESARROLLO Y DOCUMENTACIÓN PARA CONSULTORES – TENABLE.IO PROJECT
+# DEVELOPMENT AND DOCUMENTATION GUIDE FOR CONSULTANTS – TENABLE.IO PROJECT
 
-Este documento establece el estándar que deben seguir los desarrolladores y consultores para mantener la consistencia, calidad y funcionalidad en el proyecto Tenable.io.
+This guide defines the standards developers and consultants must follow to ensure consistency, quality, and maintainability in the Tenable.io project.
 
-------------------------------------------------------------
+---
 
-ESTRUCTURA DEL PROYECTO
+## PROJECT STRUCTURE
 
-Los scripts Python están organizados en el directorio principal tenable_tools/
+All Python scripts are organized under the main `tenable_tools/` directory:
+
 
 tenable_tools/
 ├── .env
@@ -28,135 +29,146 @@ tenable_tools/
 ├── create_scan.py
 ├── list_templates.py
 ├── list_scanners.py
-├── lab_asset_inventory.py
-├── lab_schedule_scan.py
-├── lab_scan_list.py
-├── lab_vuln_export.py
+├── asset_inventory.py
+├── schedule_scan.py
+├── scan_list.py
+├── vulnerabilities.py
+├── webapp_scan.py
+├── read_results.py
+├── critical_vuln_count.py
+├── tags.py
+├── export_pdf.py
 ├── test_auth.py
 
 ------------------------------------------------------------
 
-NOMBRAMIENTO DE ARCHIVOS
+## FILE NAMING CONVENTIONS
 
-- Usa snake_case para nombres de archivo.
-- Prefijo lab_ para scripts de laboratorio.
-- Sufijos descriptivos como _basic, _extended, _advanced para variantes.
+- Use **snake_case** for all file names.
+- Prefix experimental or lab scripts with `lab_`.
+- Use descriptive suffixes for variants: `_basic`, `_extended`, `_advanced`.
 
-Ejemplos:
-- lab_webapp_scan.py
-- lab_read_results.py
-- lab_critical_vuln_count.py
+**Examples:**
 
-------------------------------------------------------------
+- `webapp_scan.py`  
+- `read_results.py`  
+- `critical_vuln_count.py`  
 
-ESTÁNDARES DE COMENTARIOS Y DOCUMENTACIÓN
+---
 
-1. Docstring principal del archivo
+## COMMENTING AND DOCUMENTATION STANDARDS
 
-Debe ir al inicio del archivo:
+### 1. File-level docstring
 
+At the beginning of each file:
+
+```python
 """
-lab_example.py
+read_results.py
 
-Este script permite realizar X tarea mediante la API de Tenable.io.
+This script reads and displays the first rows of the CSV export from a Tenable.io scan.
 """
 
-2. Docstring por función
+2. Function-level docstring
 
-def nombre_funcion(param1, param2):
+def fetch_scan(scan_id, include_details=False):
     """
-    Explicación clara de lo que hace la función.
+    Retrieves basic or detailed information about a specific scan.
 
     Args:
-        param1 (tipo): Qué representa.
-        param2 (tipo): Qué representa.
+        scan_id (int): The unique ID of the scan.
+        include_details (bool): If True, include detailed host and plugin information.
 
     Returns:
-        tipo: Qué devuelve o acción que realiza.
+        dict: Scan information returned by the API.
     """
+3. Inline comments
 
-3. Comentarios dentro del código
+Use # to clarify complex or critical code blocks:
 
-Usa # para aclarar bloques de código complejos:
-
-# Esperar hasta que el archivo esté listo para descarga
+# Wait until the export file is ready for download
 for _ in range(10):
     ...
 
 ------------------------------------------------------------
 
-INTEGRACIÓN DE NUEVAS FUNCIONALIDADES
+ADDING NEW FUNCTIONALITY
 
-Paso 1: Crear el nuevo archivo
+Step 1: Create a new module
 
-- Guarda como lab_nueva_funcionalidad.py
-- Usa docstrings y comentarios
-- Utiliza funciones auxiliares de api_utils.py y constantes de config.py
+Save as lab_new_feature.py (or an appropriate descriptive name).
+Include file-level docstring and inline comments.
+Use helper functions from api_utils.py and constants from config.py.
 
-Paso 2: Modificar main.py
+Step 2: Modify main.py
+Add the command in the main dispatcher block:
 
-Agrega el comando dentro del bloque principal:
+elif command == "new_command":
+    from lab_new_feature import new_function
+    new_function()
 
-elif command == "nombre_comando":
-    from lab_nombre_funcionalidad import nombre_funcion
-    nombre_funcion()
-
-Paso 3: Registrar el comando en show_help()
+Step 3: Update show_help()
+Register the command and provide a brief description:
 
 def show_help():
     ...
-    print("  python main.py nombre_comando              # Breve descripción de la funcionalidad")
+    print("  python main.py new_command              # Brief description of the functionality")
 
-Paso 4: Agregar al README.md
+Step 4: Update README.md
 
-Incluye una sección como:
+Include a section describing the new command:
 
-## Ejecutar análisis de vulnerabilidades críticas
+## Execute Critical Vulnerability Analysis
 
-Comando:
+Command:
 
-------------------------------------------------------------
 python main.py critical_vulns_count
 
+Description:
 
-Este comando exporta el último escaneo y cuenta las vulnerabilidades con severidad crítica.
-
-------------------------------------------------------------
-
-CHECKLIST ANTES DE HACER COMMIT
-
-- [ ] El archivo tiene docstring inicial
-- [ ] Todas las funciones están documentadas
-- [ ] Se agregó la funcionalidad a main.py
-- [ ] El comando fue registrado en show_help()
-- [ ] El README.md incluye la nueva funcionalidad
-- [ ] Pruebas realizadas localmente sin errores
+This command exports the latest scan and counts vulnerabilities marked as critical.
 
 ------------------------------------------------------------
 
-BUENAS PRÁCTICAS
+PRE-COMMIT CHECKLIST
 
-- Usar nombres descriptivos para variables y funciones.
-- Validar todos los scan_id, template_uuid o credential_uuid.
-- Manejar errores con bloques try/except claros.
-- Evitar duplicar funciones ya existentes en api_utils.py.
+ File contains a top-level docstring
+
+ All functions are properly documented
+
+ Functionality added to main.py
+
+ Command registered in show_help()
+
+ README.md updated with the new feature
+
+ Successfully tested locally without errors
 
 ------------------------------------------------------------
 
-EJEMPLO DE NUEVA FUNCIÓN
+BEST PRACTICES
+
+-Use descriptive names for variables and functions.
+-Validate all scan_id, template_uuid, and credential_uuid inputs.
+-Handle errors using clear try/except blocks.
+-Avoid duplicating existing functions available in api_utils.py.
+
+------------------------------------------------------------
+
+EXAMPLE FUNCTION
 
 def example_function(scan_id):
     """
-    Obtiene información básica del escaneo.
+    Fetches basic information about a scan.
 
     Args:
-        scan_id (int): ID del escaneo.
+        scan_id (int): ID of the scan.
 
     Returns:
-        None. Muestra información por consola.
+        None. Outputs scan information to the console.
     """
     try:
-        response = requests.get(...)
+        response = requests.get(f"{BASE_URL}/scans/{scan_id}", headers=get_headers())
         if response.status_code == 200:
             print(response.json())
         else:
@@ -166,9 +178,9 @@ def example_function(scan_id):
 
 ------------------------------------------------------------
 
-NOTA FINAL
+FINAL NOTE
 
-Todo el equipo debe seguir esta guía para asegurar compatibilidad, claridad y mantenibilidad del código. No se aprobarán contribuciones que no cumplan con este formato.
+All team members must follow this guide to ensure code compatibility, clarity, and maintainability. Contributions that do not comply with these standards will not be approved.
 
 
 
