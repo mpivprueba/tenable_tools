@@ -53,15 +53,15 @@ command = sys.argv[1]
 # Command dispatching using if-elif structure
 
 if command == "scans":
-    from lab_scan_list import show_scans
+    from scans.list_scans import show_scans
     show_scans()
 
 elif command == "assets":
-    from lab_asset_inventory import list_assets
+    from assets.list_assets import list_assets
     list_assets()
 
 elif command == "export":
-    from lab_vuln_export import export_vulnerabilities
+    from vulnerabilities.vulnerabilities_export_csv import export_vulnerabilities
     # scan_id is optional
     if len(sys.argv) >= 3:
         export_vulnerabilities(scan_id=int(sys.argv[2]))
@@ -69,14 +69,14 @@ elif command == "export":
         export_vulnerabilities()
 
 elif command == "schedule":
-    from lab_schedule_scan import schedule_scan
+    from scans.scans_schedule import schedule_scan
     if len(sys.argv) >= 3:
         schedule_scan(scan_id=int(sys.argv[2]))
     else:
         print("You must provide a scan ID to schedule.")
 
 elif command == "create_credential":
-    from create_credentials import create_credential
+    from credentials.create_credentials import create_credential
     if len(sys.argv) >= 6:
         # Required parameters
         name = sys.argv[2]
@@ -93,7 +93,7 @@ elif command == "create_credential":
         print("Usage: create_credential <name> <user> <password> <elevation_method> [account] [elevation_password] [bin_directory]")
 
 elif command == "edit_credential":
-    from edit_credentials import edit_credential
+    from credentials.edit_credentials import edit_credential
     if len(sys.argv) >= 3:
         # Required parameter
         uuid = sys.argv[2]
@@ -111,26 +111,26 @@ elif command == "edit_credential":
         print("Usage: edit_credential <uuid> [name] [user] [password] [method] [account] [elevation_password] [bin_directory]")
 
 elif command == "delete_credential":
-    from delete_credentials import delete_credential
+    from credentials.delete_credentials import delete_credential
     if len(sys.argv) >= 3:
         delete_credential(sys.argv[2])
     else:
         print("Usage: delete_credential <uuid>")
 
 elif command == "list_credentials":
-    from list_credentials import list_credentials
+    from credentials.list_credentials import list_credentials
     list_credentials()
 
 elif command == "credential_types":
-    from list_credential_types import list_credential_types
+    from credentials.list_credential_types import list_credential_types
     list_credential_types()
 
 elif command == "credential_names":
-    from list_credential_names import list_credential_names
+    from credentials.list_credential_names import list_credential_names
     list_credential_names()
 
 elif command == "credential_ids":
-    from extract_credential_ids import extract_credential_ids
+    from credentials.extract_credential_ids import extract_credential_ids
     extract_credential_ids()
 
 elif command == "credential_config":
@@ -141,7 +141,7 @@ elif command == "credential_config":
         print("Usage: credential_config <type>")
 
 elif command == "create_policy":
-    from create_policy import create_policy
+    from policies.create_policy import create_policy
     if len(sys.argv) >= 4:
         name = sys.argv[2]
         template_uuid = sys.argv[3]
@@ -153,11 +153,11 @@ elif command == "create_policy":
         print("Usage: create_policy <name> <template_uuid> [targets] [credentials_uuid]")
 
 elif command == "list_templates":
-    from list_templates import list_templates
+    from policies.list_templates import list_templates
     list_templates()
 
 elif command == "create_scan":
-    from create_scan import create_scan_interactive
+    from scans.create_scan import create_scan_interactive
     create_scan_interactive()
 
 elif command == "list_scanners":
@@ -173,43 +173,43 @@ elif command == "critical_vulns":
         print("Usage: python main.py critical_vulns <scan_id> [scan_id...]")
 
 elif command == "generate_assets_report":
-    from assets_reports import Assets
+    from assets.assets_reports import Assets
     Assets().report()
 
 elif command == "generate_untagged_report":
-    from assets_reports import Assets
+    from assets.assets_reports import Assets
     Assets().untagged()
 
 elif command == "generate_tags_summary":
-    from tags import Tags
+    from vulnerabilities.tags import Tags
     Tags().summary()
 
 elif command == "generate_vulns_report":
-    from vulnerabilities_reports import Vulnerabilities
+    from vulnerabilities.vulnerabilities_reports import Vulnerabilities
     scan_ids = [int(arg) for arg in sys.argv[2:]] if len(sys.argv) > 2 else []
     Vulnerabilities().report(*scan_ids)
 
 elif command == "export_pdf":
-    from lab_export_pdf import export_scan_to_pdf
+    from scans.results_export_pdf import export_scan_to_pdf
     if len(sys.argv) >= 3:
         export_scan_to_pdf(int(sys.argv[2]))
     else:
         print("You must provide the scan_id to export to PDF.")
 
 elif command == "read_results":
-    from read_results import read_results_csv
+    from vulnerabilities.vulnerabilities_read_scan_results import read_results_csv
     read_results_csv()
 
 elif command == "critical_vulns_count":
-    from critical_vuln_count import count_critical_vulnerabilities
+    from vulnerabilities.critical_vuln_count import count_critical_vulnerabilities
     count_critical_vulnerabilities()
 
 elif command == "webapp_scan":
-    from webapp_scan import launch_webapp_scan
+    from webapp.webapp_scan import launch_webapp_scan
     launch_webapp_scan()
 
 elif command == "webapp_scan_basic":
-    from webapp_scan_basic import create_basic_webapp_scan
+    from webapp.webapp_scan_basic import create_basic_webapp_scan
     create_basic_webapp_scan()
 
 else:

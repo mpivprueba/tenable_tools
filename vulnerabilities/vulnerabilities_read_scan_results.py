@@ -1,21 +1,16 @@
 """
-read_results.py
+vulnerabilities_read_scan_results.py
 
-This module reads and displays the content of the myscan.csv file
-exported from a Tenable.io scan. It shows a tabular view of the first rows
-to facilitate quick review.
-
-Usage from main.py:
-  python main.py read_results
-  
+Reads and displays the content of a scan export CSV (myscan.csv) from Tenable.io.
+Shows a tabular view of the first rows for quick review.
 """
 
 import csv
 import os
 
-def read_results_csv(path="myscan.csv", row_limit=10):
+def read_scan_results(path="myscan.csv", row_limit=10):
     """
-    Reads and displays the first rows of the myscan.csv file.
+    Reads and displays the first rows of the scan CSV file.
 
     Args:
         path (str): Path to the CSV file to read.

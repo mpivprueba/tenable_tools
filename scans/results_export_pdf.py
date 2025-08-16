@@ -1,5 +1,5 @@
 """
-lab_export_pdf.py
+results_export_pdf.py
 
 This module allows exporting scan results in PDF format
 from Tenable.io using the API.

@@ -1,18 +1,18 @@
 """
-lab_scan_list.py
+list_scans.py
 
 Displays the list of available scans in Tenable.io, sorted by scan ID.
 """
 
 from api_utils import get_scan_list  # Import function to retrieve scan list from API
 
-def show_scans():
+
+def list_scans():
     """
     Retrieves and prints the list of scans from Tenable.io sorted by ascending ID.
 
     If no scans are found, prints an appropriate message.
     """
-
     scans = get_scan_list()
     if not scans:
         print("No scans found.")
