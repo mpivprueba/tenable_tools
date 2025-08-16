@@ -1,108 +1,143 @@
-# Tenable Tools — Gestión Automatizada en Tenable.io
+# Tenable.io CLI Utility
 
-Este proyecto ofrece una interfaz en Python para interactuar con la API de Tenable.io, permitiendo la gestión de activos, credenciales, políticas y escaneos desde la terminal. Está diseñado para ser modular, seguro y eficiente, facilitando la automatización y el monitoreo de vulnerabilidades en entornos empresariales.
+This project provides a command-line interface (CLI) for managing and interacting
+with Tenable.io. It allows users to list scans, manage assets and credentials,
+create policies, launch scans, export results, and generate reports.
 
-## Características principales
+This README serves as a step-by-step guide for clients to set up, configure,
+and use the CLI effectively.
 
-- Crear, editar y eliminar credenciales SSH
-- Listar activos registrados con hostname e IP
-- Gestionar escaneos: crear, programar y exportar resultados
-- Visualizar templates, escáneres y políticas disponibles
-- Exportar datos en formato `.nessus`
-- Acceso por línea de comandos mediante `main.py`
+## Project Overview
 
-## Requisitos
+The utility allows you to perform tasks such as:
 
-- Python 3.8 o superior
-- Cuenta activa en Tenable.io
-- Claves `ACCESS_KEY` y `SECRET_KEY` generadas desde el portal de Tenable.io
-- Acceso a Internet
+- Listing and scheduling scans
+- Exporting scan results in CSV and PDF formats
+- Managing credentials and policies
+- Generating reports on assets, untagged assets, and vulnerabilities
+- Launching Web Application Security (WAS) scans
 
-## Instalación
+All functionality is accessible via the `main.py` CLI script.
 
-### 1. Clona el repositorio
+## Project Structure
 
-```bash
-git clone https://github.com/mpivprueba/tenable_tools.git
+tenable_tools/
+├── main.py                # CLI entry point
+├── config.py              # Global configuration (API keys, base URL)
+├── api_utils.py           # Helper functions for API requests
+├── assets/                # Asset management scripts
+├── vulnerabilities/       # Vulnerability export, reports, and analysis
+├── scans/                 # Scan management (create, schedule, list)
+├── credentials/           # Credential management (create, edit, delete, list)
+├── policies/              # Policy creation and templates
+├── webapp/                # Web application scanning scripts
+└── README.md              # This file
+
+# Installation
+
+## Step 1: Prerequisites
+
+Before starting, ensure you have:
+
+- **Python 3.10 or higher** installed
+- **pip** (Python package manager)
+- An **active Tenable.io account** with API access
+- Internet connection
+1. Clone the repository:
+
+## Step 2: Clone the Repository
+
+Open a terminal or command prompt and run:
+
+bash
+git clone <repository_url>
 cd tenable_tools
 
----
-
-### 2. Crear un entorno virtual (Opcional)
+## Step 3: Create a Virtual Environment (Optional but Recommended)
 
 python -m venv venv
-source venv/bin/activate       # En Linux/macOS
-venv\Scripts\activate          # En Windows
 
----
+* Activate the environment:
 
-### 3. Instala las dependencias: Crea un archivo requirements.txt con este contenido
+Windows:
+venv\Scripts\activate
 
-requests
-python-dotenv
+Linux / macOS:
+source venv/bin/activate
 
-# Instala las dependencias ejecutando:
+## Step 4: Install Required Python Libraries
+All dependencies are listed in requirements.txt. Install them with:
 
 pip install -r requirements.txt
 
----
+Dependencies included:
 
-## Configuracion:
+-requests – For making HTTP requests to Tenable.io API
+-python-dotenv – For reading .env configuration files
+-tabulate – Optional, for nicely formatted table outputs
+-smtplib (built-in Python library) – For sending email notifications
+-email (built-in Python library) – For composing email messages
+-Any other libraries included in requirements.txt
 
-## Crea un archivo .env en la raíz del proyecto con las credenciales de Tenable.io:
+Verify installation by running:
 
-ACCESS_KEY=tu_access_key_aqui
-SECRET_KEY=tu_secret_key_aqui
+pip list
+
+You should see all required packages installed.
+
+## Step 5: Configure Environment Variables
+
+Create a .env file in the project root with the following content:
+
+# Tenable.io API credentials
+ACCESS_KEY=<your_access_key>
+SECRET_KEY=<your_secret_key>
 BASE_URL=https://cloud.tenable.com
 
----
+# Email configuration for alerts and notifications
+EMAIL_FROM=<sender_email_address>
+EMAIL_TO=<recipient_email_address>
+EMAIL_SERVER=<smtp_server>
+EMAIL_PORT=<smtp_port>
+EMAIL_USER=<smtp_user>
+EMAIL_PASS=<smtp_password>
 
-## Estructura del proyecto
+Explanation of variables:
 
-tenable_tools/
-├── .env
-├── .gitignore
-├── README.md
-├── requirements.txt
-├── main.py
-├── config.py
-├── api_utils.py
-├── create_credentials.py
-├── edit_credentials.py
-├── delete_credentials.py
-├── list_credentials.py
-├── list_credential_names.py
-├── list_credential_types.py
-├── extract_credential_ids.py
-├── show_type_config.py
-├── create_policy.py
-├── create_scan.py
-├── list_templates.py
-├── list_scanners.py
-├── lab_asset_inventory.py
-├── lab_schedule_scan.py
-├── lab_scan_list.py
-├── lab_vuln_export.py
-├── test_auth.py
+ACCESS_KEY / SECRET_KEY: API credentials from Tenable.io
+BASE_URL: Base URL for Tenable.io API (default: https://cloud.tenable.com)
+EMAIL_FROM: Sender email for notifications
+EMAIL_TO: Recipient email for alerts
+EMAIL_SERVER: SMTP server (e.g., smtp.office365.com)
+EMAIL_PORT: SMTP port (e.g., 587 for TLS)
+EMAIL_USER: Email username
+EMAIL_PASS: Email password or app-specific password
 
----
+## Step 6: Run the CLI
 
-## Comandos disponibles
-### Desde la terminal, ejecuta main.py seguido de cualquiera de estos comandos:
-### 1. Escaneos
+Test the setup by running the CLI:
 
-python main.py scans                             # Listar escaneos disponibles
-python main.py export                            # Exportar escaneo finalizado
-python main.py export <scan_id>                  # Exportar escaneo por ID
-python main.py schedule <scan_id>                # Programar escaneo por ID
-python main.py create_scan                       # Crear escaneo interactivo
+python main.py
 
-### 2. Activos
-python main.py assets                         # Listar activos registrados
+This will display a list of all available commands and usage instructions.
 
-### 3. Credenciales
-python main.py create_credential <name> <user> <password> <elevation_method> [account][elevation_password] [bin_directory]
-python main.py edit_credential <uuid> [name] 
-python main.py delete_credential <uuid>
+Example commands:
 
----
+python main.py scans
+python main.py generate_assets_report
+python main.py critical_vulns <scan_id>
+
+
+## Step 7: Next Steps
+
+Once the environment is ready:
+
+*Explore module-specific commands:
+    -scans/ – Manage and schedule scans
+    -assets/ – Export assets, generate reports, and view tags
+    -credentials/ – Create, edit, delete, and list credentials
+    -policies/ – Create and list scan policies
+    -vulnerabilities/ – Export vulnerabilities and generate reports
+    -webapp/ – Launch Web Application Scans (WAS)
+
+Each module will have its own detailed README with examples and explanations.
