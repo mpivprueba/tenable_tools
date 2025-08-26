@@ -1,131 +1,105 @@
-# Scans Module - Tenable.io
+# Scans Module
 
-## Description
-The `scans` module provides functionalities for managing and interacting with Tenable.io scans.  
-It allows users to list available scans, create new scans, schedule scans, and export scan results in CSV or PDF formats.
+The `scans/` module provides functions to create, launch, monitor, and export network and web application scans using the Tenable.io API.  
+It is designed to simplify the vulnerability assessment process by abstracting the complexity of direct API calls.
+
+---
+
+## Files in this module
+
+- `scan_launcher.py` → Creates and launches a network vulnerability scan.  
+- `scan_status.py` → Monitors the status of a scan until it completes.  
+- `scan_export.py` → Exports scan results in CSV or PDF format.  
+- `webapp_scan.py` → Creates and launches a Web Application Scan (WAS).  
 
 ---
 
 ## Requirements
-- Python 3.10+
-- Libraries:
-  - `requests`
-  - `csv`
-  - `os`
-- Environment variables in `.env`:
-  - `ACCESS_KEY`
-  - `SECRET_KEY`
-  - `BASE_URL`
-  - `EMAIL_FROM`
-  - `EMAIL_TO`
-  - `EMAIL_SERVER`
-  - `EMAIL_PORT`
-  - `EMAIL_USER`
-  - `EMAIL_PASS`
 
----
+This module depends on the following Python libraries (already included in `requirements.txt`):
 
-## Functions
+bash
+requests
+python-dotenv
 
-### 1. `show_scans()`
-**Description:**  
-Retrieves and displays all available scans in Tenable.io.  
+## Install them with:
 
-**Arguments:**  
-- None  
+pip install -r requirements.txt
 
-**Returns:**  
-- `None` (Prints scan IDs, names, and statuses to the console)  
+### Environment variables
 
-**Example:**
+The module requires API credentials and configuration stored in a .env file at the project root:
 
-from scans.list_scans import show_scans
+ACCESS_KEY=your_access_key
+SECRET_KEY=your_secret_key
+BASE_URL=https://cloud.tenable.com
+Usage guide
 
-show_scans()
+### 1. Launch a network scan
+File: scan_launcher.py
 
-# CLI Usage:
+from scans.scan_launcher import launch_scan
 
-python main.py scans
+scan_id = launch_scan("My Network Scan", ["192.168.1.1", "192.168.1.2"])
+print(f"Scan launched with ID: {scan_id}")
 
-### 2. create_scan_interactive()
-**Description:** 
-Guides the user interactively to create a new scan using a scan template.
+* Input: Scan name and list of target IPs.
+* Output: scan_id (unique identifier in Tenable.io).
 
-**Arguments:**  
-- None (inputs are requested interactively)
+### 2. Monitor scan status
+File: scan_status.py
 
-**Returns:**  
-- None (Outputs scan creation confirmation and ID to the console)
+from scans.scan_status import check_scan_status
 
-**Example:**
-from scans.create_scan import create_scan_interactive
+status = check_scan_status(scan_id=1234)
+print(f"Current status: {status}")
 
-create_scan_interactive()
+* Input: scan_id.
+* Output: Current scan status (running, completed, paused).
 
+### 3. Export scan results
+File: scan_export.py
 
-CLI Usage:
+from scans.scan_export import export_scan_results
 
-python main.py create_scan
+export_file = export_scan_results(scan_id=1234, format="csv")
+print(f"Scan results exported to: {export_file}")
+* Input: scan_id, export format (csv or pdf).
+* Output: File path of exported report.
 
-### 3. schedule_scan(scan_id)
-**Description:** 
-Schedules an existing scan to run immediately or at a specified time.
+### 4. Launch a Web Application Scan (WAS)
+File: webapp_scan.py
 
-**Arguments:** 
-- scan_id (int): The ID of the scan to schedule
+from scans.webapp_scan import launch_webapp_scan
 
-**Returns:**  
-- None (Prints confirmation of scheduled scan)
+scan_id = launch_webapp_scan("Web Scan", "http://demo.testfire.net")
+print(f"Web Application Scan launched with ID: {scan_id}")
+* Input: Scan name and target URL.
+* Output: scan_id for the WAS.
 
-**Example:**
-from scans.scans_schedule import schedule_scan
+## Example workflow
 
-schedule_scan(scan_id=1234)
+1. Launch a network scan:
 
-CLI Usage:
-python main.py schedule 1234
+scan_id = launch_scan("Office Network", ["10.0.0.1"])
 
-### 4. list_scanners()
-**Description:** 
-Lists all scanners registered in Tenable.io, including name, ID, and status.
+2. Check the scan status:
 
-**Arguments:** 
-- None
+status = check_scan_status(scan_id)
 
-**Returns:**  
-- None (Prints scanner details to console)
+3. Export results once completed:
 
-**Example:**
+report = export_scan_results(scan_id, "pdf")
 
-from scans.list_scanners import list_scanners
+4. Launch a web application scan:
 
-list_scanners()
+was_id = launch_webapp_scan("Corporate Portal", "https://intranet.company.com")
 
+## Notes
+* The module automatically handles authentication with the Tenable.io API using credentials from the .env file.
 
-CLI Usage:
-python main.py list_scanners
+* Exported reports are saved in the exports/ directory.
 
-### 5. export_scan_to_pdf(scan_id)
-**Description:** 
-Exports scan results to PDF format and saves it locally.
+* Includes error handling for common issues (invalid API keys, scan not found, etc.).
 
-**Arguments:** 
-- scan_id (int): The ID of the scan to export
-
-**Returns:**  
-- None (Saves a PDF file named scan_<scan_id>.pdf)
-
-**Example:**
-from scans.results_export_pdf import export_scan_to_pdf
-
-export_scan_to_pdf(scan_id=1234)
-
-
-CLI Usage:
-python main.py export_pdf 1234
-
-
-### Notes
-- Always verify that the scan_id exists before scheduling or exporting a scan.
-- PDF export may take several seconds; ensure the download completes before proceeding.
-- Use descriptive names for scans to make identification easier in large environments.
+* Web Application Scans (WAS) require a Tenable.io WAS license.
