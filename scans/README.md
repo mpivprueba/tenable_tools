@@ -22,6 +22,8 @@ bash
 requests
 python-dotenv
 
+---
+
 ## Install them with:
 
 pip install -r requirements.txt
@@ -77,6 +79,8 @@ print(f"Web Application Scan launched with ID: {scan_id}")
 * Input: Scan name and target URL.
 * Output: scan_id for the WAS.
 
+---
+
 ## Example workflow
 
 1. Launch a network scan:
@@ -94,6 +98,8 @@ report = export_scan_results(scan_id, "pdf")
 4. Launch a web application scan:
 
 was_id = launch_webapp_scan("Corporate Portal", "https://intranet.company.com")
+
+---
 
 ## Notes
 * The module automatically handles authentication with the Tenable.io API using credentials from the .env file.
