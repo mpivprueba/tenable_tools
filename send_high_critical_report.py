@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
 from tenable.io import TenableIO
-from config import ACCESS_KEY, SECRET_KEY, EMAIL_FROM, EMAIL_TO, EMAIL_SERVER, EMAIL_PORT, EMAIL_USER, EMAIL_PASS
+from Tenable.tenable_tools.vulnerability_management.config import ACCESS_KEY, SECRET_KEY, EMAIL_FROM, EMAIL_TO, EMAIL_SERVER, EMAIL_PORT, EMAIL_USER, EMAIL_PASS
 
 # Inicializar cliente Tenable
 tio = TenableIO(ACCESS_KEY, SECRET_KEY)
