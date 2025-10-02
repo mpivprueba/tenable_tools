@@ -180,7 +180,6 @@ __marimo__/
 
 # Variables de entorno (archivo `.env`) y configuración sensible
 .env
-config.py
 
 # Archivo de dependencias locales
 requirements-dev
