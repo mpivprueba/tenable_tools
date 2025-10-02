@@ -17,9 +17,6 @@ env/
 env.bak/
 venv.bak/
 
-# Configuración de proyecto local
-config.py
-
 # Librerías C compiladas
 *.so
 
