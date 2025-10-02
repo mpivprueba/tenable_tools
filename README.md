@@ -74,19 +74,20 @@ python main.py
 
 # Project Structure
 
+```
 tenable_tools/
-├── vulnerability_management/    # First tool - Vulnerability Management
-│   ├── assets/                  # Asset management
-│   ├── credentials/             # Credentials handling
-│   ├── policies/                # Scan policies
-│   ├── scans/                   # Scan execution and management
-│   ├── tests/                   # Test suite
-│   ├── vulnerabilities/         # Vulnerability analysis
-│   ├── webapp/                  # Main web interface
-│   └── README.md                # Module-specific documentation
-├── README.md                    # This file
-└── [future_tools]/              # Upcoming modules
-
+├── vulnerability_management/          # First tool - Vulnerability Management
+│   ├── assets/                        # Asset management
+│   ├── credentials/                   # Credentials handling
+│   ├── policies/                      # Scan policies
+│   ├── scans/                         # Scan execution and management
+│   ├── tests/                         # Test suite
+│   ├── vulnerabilities/               # Vulnerability analysis
+│   ├── webapp/                        # Main web interface
+│   └── README.md                      # Module-specific documentation
+├── README.md                          # This file
+└── [future_tools]/                    # Upcoming modules
+```
 ---
 
 ## Available Modules
