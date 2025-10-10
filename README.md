@@ -1,4 +1,4 @@
-# # Tenable Tools - MPIV Automation Suite
+# Tenable Tools - MPIV Automation Suite
 
 * [![MPIV Developed](https://img.shields.io/badge/Developed%20by-MPIV-orange.svg)](https://mpivpartners.com)
 
