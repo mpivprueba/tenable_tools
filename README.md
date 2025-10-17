@@ -12,16 +12,18 @@
 
 ## MPIV Automation Tools for Tenable
 
-This repository contains a comprehensive suite of **automation tools and scripts developed by [MPIV Partners](https://mpivpartners.com/)** to help our clients maximize their Tenable investment through simplified API interactions, automated workflows, and standardized security processes.
+This repository contains **Python libraries and scripts developed by** [MPIV Partners](https://mpivpartners.com/)** to simplify Tenable.io API interactions for our clients. These tools encapsulate MPIV's proven methodologies into reusable components that accelerate vulnerability management workflows.
 
-## Why MPIV Automation?
+## Why Use MPIV's Tenable Tools?
+As Tenable implementation experts, we've built these tools to help our clients:
 
-As Tenable experts and implementation partners, we've packaged our proven methodologies into reusable tools that:
+- **Simplify API interactions** with easy-to-use Python wrappers
 
-- **Reduce operational overhead** by automating repetitive tasks
-- **Ensure consistency** across vulnerability management processes  
-- **Accelerate time-to-value** from your Tenable deployment
-- **Provide enterprise-grade reporting** for compliance and audits
+- **Automate repetitive tasks** like reporting and asset management
+
+- **Standardize processes** across security teams
+
+- **Reduce development time** when building custom Tenable integrations
 
 ---
 
